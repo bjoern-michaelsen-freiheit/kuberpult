@@ -7,11 +7,6 @@ name: "Execution Plan on main"
       - main
 
 jobs:
-  release:
-    uses: ./.github/workflows/release.yml
-    with:
-      trigger: main
-
   execution-plan:
     uses: ./.github/workflows/execution-plan-snippet.yml
     with:

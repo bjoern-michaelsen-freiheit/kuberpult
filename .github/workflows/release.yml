@@ -1,16 +1,21 @@
 name: release
 on:
-  workflow_call:
-    inputs:
-      trigger:
-        required: true
-        type: string
-        description: 'The trigger which calls the workflow, one of [pull-request, main, tag]'
+  workflow_dispatch:
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: go-semantic-release/action@v1
+        id: semrel-dry
+        with:
+          dry: true
+          update-file: charts/kuberpult/Chart.yml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create helm chart for release
+        run: |
+          make -C charts/kuberpult release-tag VERSION=${{ steps.semrel-dry.outputs.version }}
       - uses: go-semantic-release/action@v1
         id: semrel
         with:
